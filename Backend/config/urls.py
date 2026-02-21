@@ -34,7 +34,9 @@ def fetch_emails(request):
             })
         return JsonResponse(emails, safe=False)
     except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
+        res = JsonResponse({"error": str(e)}, status=500)
+        res["Access-Control-Allow-Origin"] = "*"
+        return res
 
 urlpatterns = [
     path("emails/", fetch_emails),

@@ -6,7 +6,7 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-fallback-key-set-this-in-env")
 DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1", "yes")
 ALLOWED_HOSTS = ["*"]
 
@@ -28,12 +28,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 DATABASES = {}
 
-CORS_ALLOWED_ORIGINS = [
-    "https://siddz.com",
-    "https://www.siddz.com",
-    "https://api.siddz.com",
-]
-CORS_ALLOW_METHODS = ["GET", "OPTIONS"]
+CORS_ALLOW_ALL_ORIGINS = True
 
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
