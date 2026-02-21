@@ -1,17 +1,24 @@
 import os
+import traceback
 from django.urls import path
 from django.http import JsonResponse
 from composio import Composio
 
 def fetch_emails(request):
     try:
+        api_key = os.getenv("COMPOSIO_API_KEY", "")
+        user_id = os.getenv("COMPOSIO_USER_ID", "")
+        if not api_key or not user_id:
+            res = JsonResponse({"error": "Missing COMPOSIO_API_KEY or COMPOSIO_USER_ID env vars"}, status=500)
+            res["Access-Control-Allow-Origin"] = "*"
+            return res
         composio = Composio(
-            api_key=os.getenv("COMPOSIO_API_KEY"),
+            api_key=api_key,
             toolkit_versions={"gmail": "20260212_00"}
         )
         result = composio.tools.execute(
             "GMAIL_FETCH_EMAILS",
-            user_id=os.getenv("COMPOSIO_USER_ID"),
+            user_id=user_id,
             arguments={"max_results": 5}
         )
         messages = result.get("data", {}).get("messages", [])
@@ -34,7 +41,7 @@ def fetch_emails(request):
             })
         return JsonResponse(emails, safe=False)
     except Exception as e:
-        res = JsonResponse({"error": str(e)}, status=500)
+        res = JsonResponse({"error": str(e), "trace": traceback.format_exc()}, status=500)
         res["Access-Control-Allow-Origin"] = "*"
         return res
 
