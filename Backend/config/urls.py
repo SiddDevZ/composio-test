@@ -16,6 +16,7 @@ def fetch_emails(request):
             api_key=api_key,
             toolkit_versions={"gmail": "20260212_00"}
         )
+        composio.tools.get(user_id=user_id, toolkits=["gmail"])
         result = composio.tools.execute(
             "GMAIL_FETCH_EMAILS",
             user_id=user_id,
